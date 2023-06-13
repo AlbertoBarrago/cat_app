@@ -1,14 +1,28 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/providers/user_provider.dart';
 
 class TabSettings extends StatelessWidget {
   const TabSettings({super.key, required this.title});
-
   final String title;
-
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(title),
+    final userProvider = Provider.of<UserProvider>(context);
+
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: () {
+              userProvider.logout();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

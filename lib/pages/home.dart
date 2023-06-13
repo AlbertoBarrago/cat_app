@@ -1,9 +1,11 @@
+import 'package:app_cats/auth/login_signup.dart';
 import 'package:app_cats/pages/tabs/tab_cat.dart';
 import 'package:app_cats/pages/tabs/tab_list.dart';
 import 'package:app_cats/pages/tabs/tab_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/providers/tab_provider.dart';
+import '../services/providers/user_provider.dart';
 import '../services/settings/enum.dart';
 
 class TabLayout extends StatelessWidget {
@@ -11,34 +13,47 @@ class TabLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access the TabProvider instance using Provider.of<T>
-    final tabProvider = Provider.of<TabProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tab Layout'),
-      ),
-      body: _buildTabContent(tabProvider.currentTab),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: tabProvider.currentTab.index,
-        onTap: (index) {
-          // Call the changeTab method to update the selected tab
-          tabProvider.changeTab(TabItem.values[index]);
+        title: Consumer2<TabProvider, UserProvider>(
+        builder: (context, tabProvider, userProvider, child) {
+          return userProvider.isUserLoggedIn
+              ? Text(tabProvider.getTitleTab)
+              : const Text('Welcome');
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Cats',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'List',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+        ),
+      ),
+      body: Consumer2<TabProvider, UserProvider>(
+        builder: (context, tabProvider, userProvider, child) {
+          return userProvider.isUserLoggedIn
+              ? _buildTabContent(tabProvider.currentTab)
+              : const LoginSignUp();
+        },
+      ),
+      bottomNavigationBar: Consumer2<TabProvider, UserProvider>(
+        builder: (context, tabProvider, userProvider, child) {
+          return userProvider.isUserLoggedIn
+              ? BottomNavigationBar(
+            currentIndex: tabProvider.currentTab.index,
+            onTap: (index) {
+              tabProvider.changeTab(TabItem.values[index], prepareTitleByIndex(index));
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Cats',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list),
+                label: 'List',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
+          ) : const Text('');
+        },
       ),
     );
   }
@@ -51,6 +66,19 @@ class TabLayout extends StatelessWidget {
         return const TabList(title: 'Tab List');
       case TabItem.tabSettings:
         return const TabSettings(title : 'Tab Settings');
+    }
+  }
+
+  String prepareTitleByIndex(int index) {
+    switch (index) {
+      case 0:
+        return 'Tab Cat';
+      case 1:
+        return 'Tab List';
+      case 2:
+        return 'Tab Settings';
+      default:
+        return 'Tab Cat';
     }
   }
 }
