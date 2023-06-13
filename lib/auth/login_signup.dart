@@ -1,5 +1,6 @@
 import 'package:app_cats/services/models/db_user.dart';
 import 'package:flutter/material.dart';
+import '../services/functions/commons/generateRandomHumanName.dart';
 import '../services/functions/mongo/db_connection.dart';
 import '../services/models/user.dart';
 import '../services/settings/const.dart';
@@ -22,7 +23,6 @@ class _LoginSignUpState extends State<LoginSignUp> {
     dbName: dbNameCatApp,
   );
 
-
   void goToOnBoarding(String name, String role) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => OnboardingWidget(name: name, role: role),
@@ -37,6 +37,19 @@ class _LoginSignUpState extends State<LoginSignUp> {
     );
   }
 
+  fetchUserFromMongo() async {
+    if(userEmail == '' || userPassword == '') {
+      return goToFuck();
+    }
+
+    /// Get User and check if is Admin
+    UserMongo users = await mongoDBService.findUserByEmailAndPassword(userEmail, userPassword);
+    if(users.name != '') {
+      return User(users.name, 'Admin');
+    } else {
+      return User(generateRandomHumanName(), 'Guest');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,17 +99,4 @@ class _LoginSignUpState extends State<LoginSignUp> {
     );
   }
 
-  fetchUserFromMongo() async {
-    if(userEmail == '' || userPassword == '') {
-      return goToFuck();
-    }
-
-    /// Get User and check if is Admin
-    UserMongo users = await mongoDBService.findUserByEmailAndPassword(userEmail, userPassword);
-    if(users.name == 'Alberto') {
-      return User('Admin', users.name);
-    } else {
-      return User('Guest', 'Pippo');
-    }
-  }
 }

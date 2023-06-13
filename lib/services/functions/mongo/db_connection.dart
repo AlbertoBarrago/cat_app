@@ -29,6 +29,6 @@ class MongoDBService {
       users.add(user);
     }
     await db.close();
-    return users[0];
+    return users.isNotEmpty ? users[0] : UserMongo(email, '', '', '', '');
   }
 }
