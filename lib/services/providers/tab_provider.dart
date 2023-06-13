@@ -13,4 +13,5 @@ class TabProvider with ChangeNotifier {
     titleTab = title;
     notifyListeners();
   }
+
 }

@@ -1,5 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../services/functions/mongo/db_connection.dart';
 import '../services/models/user.dart';
+import '../services/settings/const.dart';
+import '../widgets/global/input_password.dart';
 import 'onboarding.dart';
 
 class LoginSignUp extends StatefulWidget {
@@ -12,6 +16,11 @@ class LoginSignUp extends StatefulWidget {
 class _LoginSignUpState extends State<LoginSignUp> {
   String userEmail = '';
   String userPassword = '';
+
+  final MongoDBService mongoDBService = MongoDBService(
+    mongoUrl: connectionUrl,
+    dbName: dbNameCatApp,
+  );
 
 
   void goToOnBoarding(String name, String role) {
@@ -28,8 +37,10 @@ class _LoginSignUpState extends State<LoginSignUp> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,17 +64,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
               },
             ),
             const SizedBox(height: 16.0),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true,
-              onChanged: (value) {
-                setState(() {
-                  userPassword = value;
-                });
-              },
-            ),
+            const PasswordField(),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
@@ -79,12 +80,16 @@ class _LoginSignUpState extends State<LoginSignUp> {
     );
   }
 
-  fetchUserFromMongo() {
+  fetchUserFromMongo() async {
     if(userEmail == '' || userPassword == '') {
       return goToFuck();
     }
 
-    if(userEmail == "alberto.barrago@gmail.com" && userPassword == 'password') {
+    final users = await mongoDBService.findUserByEmailAndPassword(userEmail, userPassword);
+    if (kDebugMode) {
+      print(users);
+    }
+    if(users.isNotEmpty) {
       return User('Admin', 'Alberto');
     } else {
       return User('Guest', 'Pippo');
