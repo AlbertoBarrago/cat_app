@@ -38,7 +38,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'images/logo.png',
+              'assets/images/logo.png',
               width: 150,
               height: 150,
             ),

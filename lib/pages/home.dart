@@ -74,7 +74,7 @@ class TabLayout extends StatelessWidget {
   Widget _buildTabContent(TabItem currentTab) {
     switch (currentTab) {
       case TabItem.tabCat:
-        return const TabCat(title: 'Tab Cat');
+        return const TabCat(title: 'Cats ♥️');
       case TabItem.tabList:
         return const TabList(title: 'Tab List');
       case TabItem.tabSettings:
