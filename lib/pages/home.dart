@@ -1,6 +1,6 @@
 import 'package:app_cats/auth/login_signup.dart';
 import 'package:app_cats/pages/tabs/tab_cat.dart';
-import 'package:app_cats/pages/tabs/tab_dog.dart';
+import 'package:app_cats/pages/tabs/tab_home.dart';
 import 'package:app_cats/pages/tabs/tab_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +14,13 @@ class TabLayout extends StatelessWidget {
   String prepareTitleByIndex(int index) {
     switch (index) {
       case 0:
-        return 'Tab Cat';
+        return 'Welcome!';
       case 1:
-        return 'Tab List';
+        return 'Cat List';
       case 2:
-        return 'Tab Settings';
+        return 'Settings';
       default:
-        return 'Tab Cat';
+        return 'Welcome!';
     }
   }
 
@@ -39,7 +39,7 @@ class TabLayout extends StatelessWidget {
       body: Consumer2<TabProvider, UserProvider>(
         builder: (context, tabProvider, userProvider, child) {
           return userProvider.isUserLoggedIn
-              ? _buildTabContent(tabProvider.currentTab)
+              ? _buildTabContent(tabProvider.currentTab, userProvider.userName)
               : const LoginSignUp();
         },
       ),
@@ -54,11 +54,11 @@ class TabLayout extends StatelessWidget {
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'Cats',
+                label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.pets),
-                label: 'List',
+                label: 'Pets',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
@@ -71,12 +71,16 @@ class TabLayout extends StatelessWidget {
     );
   }
 
-  Widget _buildTabContent(TabItem currentTab) {
+  void _onCollaboratePressed() {
+    print('Collaborate button pressed');
+  }
+
+  Widget _buildTabContent(TabItem currentTab, username) {
     switch (currentTab) {
       case TabItem.tabCat:
-        return const TabCat(title: 'Cats ♥️');
-      case TabItem.tabList:
-        return const TabList(title: 'Tab List');
+        return const TabCat();
+      case TabItem.tabHome:
+        return  TabHome(username: username, onCollaboratePressed: _onCollaboratePressed);
       case TabItem.tabSettings:
         return const TabSettings(title : 'Tab Settings');
     }

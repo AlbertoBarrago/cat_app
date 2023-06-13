@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import '../settings/enum.dart';
 
 class TabProvider with ChangeNotifier {
-  TabItem _currentTab = TabItem.tabCat;
-  String titleTab = 'Tab Cat';
+  TabItem _currentTab = TabItem.tabHome;
+  String titleTab = 'Welcome!';
 
   TabItem get currentTab => _currentTab;
   String get getTitleTab => titleTab;

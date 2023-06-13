@@ -14,7 +14,7 @@ class OnboardingWidget extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome', style: TextStyle(color: Colors.black)),
+        title: const Text('Miaooo!', style: TextStyle(color: Colors.black)),
       ),
       body: Center(
         child: Column(

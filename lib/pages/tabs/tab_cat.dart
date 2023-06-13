@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class TabCat extends StatefulWidget {
-  const TabCat({super.key, required this.title});
-
-  final String title;
+  const TabCat({super.key});
 
   @override
   State<TabCat> createState() => _CatGridWidgetState();
@@ -36,23 +37,54 @@ class _CatGridWidgetState extends State<TabCat> {
     }
   }
 
-  void _showImageModal(String imageUrl) {
+  String createRandomTitleFunnyTitle() {
+    final random = Random();
+    final funnyTitles
+    = ['Funny Cat', 'Cute Cat', 'Crazy Cat', 'Angry Cat', 'Sleepy Cat', 'Hungry Cat', 'Silly Cat', 'Lazy Cat', 'Cuddly Cat', 'Happy Cat', 'Sneaky Cat', 'Sassy Cat', 'Grumpy Cat', 'Fluffy Cat'];
+    final randomIndex = random.nextInt(funnyTitles.length);
+    final randomTitle = funnyTitles[randomIndex];
+    return randomTitle;
+  }
+
+  void _showImageModal(String imageUrl, String title) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppBar(
+                title: Text(title),
+                leading: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-            ),
+              Expanded(
+                child: FractionallySizedBox(
+                  heightFactor: 0.9,
+                  child: PhotoViewGallery(
+                    pageOptions: [
+                      PhotoViewGalleryPageOptions(
+                        imageProvider: NetworkImage(imageUrl),
+                        minScale: PhotoViewComputedScale.contained * 0.8,
+                        maxScale: PhotoViewComputedScale.covered * 2.0,
+                      ),
+                    ],
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.black,
+                    ),
+                    loadingBuilder: (context, event) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    onPageChanged: (index) {},
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -87,7 +119,7 @@ class _CatGridWidgetState extends State<TabCat> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      _showImageModal(catImages[index]);
+                      _showImageModal(catImages[index], createRandomTitleFunnyTitle());
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -105,8 +137,8 @@ class _CatGridWidgetState extends State<TabCat> {
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Icon(
-                                Icons.favorite,
-                                color: Colors.red,
+                                Icons.pets,
+                                color: Colors.white,
                               ),
                             ),
                           ),

@@ -1,5 +1,5 @@
 enum TabItem {
+  tabHome,
   tabCat,
-  tabList,
   tabSettings,
 }
