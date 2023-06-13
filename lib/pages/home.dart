@@ -1,6 +1,6 @@
 import 'package:app_cats/auth/login_signup.dart';
 import 'package:app_cats/pages/tabs/tab_cat.dart';
-import 'package:app_cats/pages/tabs/tab_list.dart';
+import 'package:app_cats/pages/tabs/tab_dog.dart';
 import 'package:app_cats/pages/tabs/tab_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +57,7 @@ class TabLayout extends StatelessWidget {
                 label: 'Cats',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.list),
+                icon: Icon(Icons.pets),
                 label: 'List',
               ),
               BottomNavigationBarItem(

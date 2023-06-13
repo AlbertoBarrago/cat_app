@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PasswordField extends StatefulWidget {
-  const PasswordField({super.key});
+  const PasswordField({super.key, required this.onChanged});
+
+  final Function(String) onChanged;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -28,7 +30,7 @@ class _PasswordFieldState extends State<PasswordField> {
       ),
       obscureText: _obscureText,
       onChanged: (value) {
-        // handle password value change
+        widget.onChanged(value);
       },
     );
   }

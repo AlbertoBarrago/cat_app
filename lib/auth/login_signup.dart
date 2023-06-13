@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:app_cats/services/models/db_user.dart';
 import 'package:flutter/material.dart';
 import '../services/functions/mongo/db_connection.dart';
 import '../services/models/user.dart';
@@ -64,7 +64,13 @@ class _LoginSignUpState extends State<LoginSignUp> {
               },
             ),
             const SizedBox(height: 16.0),
-            const PasswordField(),
+            PasswordField(
+                onChanged: (value){
+                  setState(() {
+                    userPassword = value;
+                  });
+                }
+            ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
@@ -85,12 +91,10 @@ class _LoginSignUpState extends State<LoginSignUp> {
       return goToFuck();
     }
 
-    final users = await mongoDBService.findUserByEmailAndPassword(userEmail, userPassword);
-    if (kDebugMode) {
-      print(users);
-    }
-    if(users.isNotEmpty) {
-      return User('Admin', 'Alberto');
+    /// Get User and check if is Admin
+    UserMongo users = await mongoDBService.findUserByEmailAndPassword(userEmail, userPassword);
+    if(users.name == 'Alberto') {
+      return User('Admin', users.name);
     } else {
       return User('Guest', 'Pippo');
     }
