@@ -19,7 +19,6 @@ class OnboardingWidget extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
             Text(
               'Welcome, $name!',

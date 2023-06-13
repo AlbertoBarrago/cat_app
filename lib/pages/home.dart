@@ -11,6 +11,19 @@ import '../services/settings/enum.dart';
 class TabLayout extends StatelessWidget {
   const TabLayout({super.key});
 
+  String prepareTitleByIndex(int index) {
+    switch (index) {
+      case 0:
+        return 'Tab Cat';
+      case 1:
+        return 'Tab List';
+      case 2:
+        return 'Tab Settings';
+      default:
+        return 'Tab Cat';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,19 +79,6 @@ class TabLayout extends StatelessWidget {
         return const TabList(title: 'Tab List');
       case TabItem.tabSettings:
         return const TabSettings(title : 'Tab Settings');
-    }
-  }
-
-  String prepareTitleByIndex(int index) {
-    switch (index) {
-      case 0:
-        return 'Tab Cat';
-      case 1:
-        return 'Tab List';
-      case 2:
-        return 'Tab Settings';
-      default:
-        return 'Tab Cat';
     }
   }
 }
