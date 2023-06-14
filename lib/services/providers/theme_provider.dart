@@ -9,5 +9,4 @@ class ThemeProvider with ChangeNotifier {
     _themeState = theme;
     notifyListeners();
   }
-
 }
