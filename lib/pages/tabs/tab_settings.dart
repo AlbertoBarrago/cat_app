@@ -14,13 +14,14 @@ class TabSettings extends StatefulWidget {
 }
 
 class _TabSettingsState extends State<TabSettings> {
-  bool isDarkTheme = false;
+
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final tabProvider = Provider.of<TabProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    bool isDarkTheme = themeProvider.theme == ThemeMode.dark;
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

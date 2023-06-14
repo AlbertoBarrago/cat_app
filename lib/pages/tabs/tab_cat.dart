@@ -23,7 +23,7 @@ class _CatGridWidgetState extends State<TabCat> {
   }
 
   Future<void> _fetchCatImages() async {
-    final response = await http.get(Uri.parse('https://api.thecatapi.com/v1/images/search?limit=10'));
+    final response = await http.get(Uri.parse('https://api.thecatapi.com/v1/images/search?limit=20'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List<dynamic>;
       final catImages = data.map((item) => item['url'] as String).toList();
@@ -56,6 +56,20 @@ class _CatGridWidgetState extends State<TabCat> {
             children: [
               AppBar(
                 title: Text(title),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.share),
+                    onPressed: () {
+                      shareImage(imageUrl);
+                    },
+                  ),
+                  IconButton(
+                      icon: const Icon(Icons.download),
+                       onPressed: () {
+                        downloadImage(imageUrl);
+                       }
+                  )
+                ],
                 leading: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
@@ -65,13 +79,14 @@ class _CatGridWidgetState extends State<TabCat> {
               ),
               Expanded(
                 child: FractionallySizedBox(
-                  heightFactor: 0.9,
+                  heightFactor: 1,
                   child: PhotoViewGallery(
                     pageOptions: [
                       PhotoViewGalleryPageOptions(
                         imageProvider: NetworkImage(imageUrl),
-                        minScale: PhotoViewComputedScale.contained * 0.8,
-                        maxScale: PhotoViewComputedScale.covered * 2.0,
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered,
+                        initialScale: PhotoViewComputedScale.covered,
                       ),
                     ],
                     backgroundDecoration: const BoxDecoration(
@@ -156,5 +171,11 @@ class _CatGridWidgetState extends State<TabCat> {
       ),
     );
   }
+
+  void shareImage(String imageUrl) {
+
+  }
+
+  void downloadImage(String imageUrl) {}
 
 }
