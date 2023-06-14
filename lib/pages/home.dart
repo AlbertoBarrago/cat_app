@@ -2,6 +2,7 @@ import 'package:app_cats/auth/login_signup.dart';
 import 'package:app_cats/pages/tabs/tab_cat.dart';
 import 'package:app_cats/pages/tabs/tab_home.dart';
 import 'package:app_cats/pages/tabs/tab_settings.dart';
+import 'package:app_cats/services/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/providers/tab_provider.dart';
@@ -28,23 +29,23 @@ class TabLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Consumer2<TabProvider, UserProvider>(
-        builder: (context, tabProvider, userProvider, child) {
+        title: Consumer3<TabProvider, UserProvider, ThemeProvider>(
+        builder: (context, tabProvider, userProvider, themeProvider, child) {
           return userProvider.isUserLoggedIn
               ? Text(tabProvider.getTitleTab)
               : const Text('Welcome');
         },
         ),
       ),
-      body: Consumer2<TabProvider, UserProvider>(
-        builder: (context, tabProvider, userProvider, child) {
+      body: Consumer3<TabProvider, UserProvider, ThemeProvider>(
+        builder: (context, tabProvider, userProvider, themeProvider, child) {
           return userProvider.isUserLoggedIn
               ? _buildTabContent(tabProvider.currentTab, userProvider.userName)
               : const LoginSignUp();
         },
       ),
-      bottomNavigationBar: Consumer2<TabProvider, UserProvider>(
-        builder: (context, tabProvider, userProvider, child) {
+      bottomNavigationBar: Consumer3<TabProvider, UserProvider, ThemeProvider>(
+        builder: (context, tabProvider, userProvider, themeProvider, child) {
           return userProvider.isUserLoggedIn
               ? BottomNavigationBar(
             currentIndex: tabProvider.currentTab.index,
@@ -82,7 +83,7 @@ class TabLayout extends StatelessWidget {
       case TabItem.tabHome:
         return  TabHome(username: username, onCollaboratePressed: _onCollaboratePressed);
       case TabItem.tabSettings:
-        return const TabSettings(title : 'Tab Settings');
+        return const TabSettings();
     }
   }
 }

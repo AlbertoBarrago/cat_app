@@ -3,3 +3,9 @@ enum TabItem {
   tabCat,
   tabSettings,
 }
+
+enum ThemeState {
+  system,
+  light,
+  dark,
+}
