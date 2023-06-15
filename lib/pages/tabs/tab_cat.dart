@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
-
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+
 
 class TabCat extends StatefulWidget {
   const TabCat({super.key});
@@ -66,9 +68,15 @@ class _CatGridWidgetState extends State<TabCat> {
                   IconButton(
                       icon: const Icon(Icons.download),
                        onPressed: () {
-                        downloadImage(imageUrl);
+                        downloadImage(imageUrl, 'cat');
                        }
-                  )
+                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.photo),
+                  //   onPressed: () {
+                  //     takePhoto('cat');
+                  //   },
+                  // )
                 ],
                 leading: IconButton(
                   icon: const Icon(Icons.close),
@@ -173,9 +181,15 @@ class _CatGridWidgetState extends State<TabCat> {
   }
 
   void shareImage(String imageUrl) {
-
+    Share.share(imageUrl, subject: 'Look at this cat!');
   }
 
-  void downloadImage(String imageUrl) {}
+  void downloadImage(String imageUrl, String albumName)  {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+     GallerySaver.saveImage(imageUrl).then((value) =>
+     scaffoldMessenger.showSnackBar(
+         SnackBar(content: Text('Image saved to $albumName album.')))
+     );
+  }
 
 }

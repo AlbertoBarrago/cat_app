@@ -1,11 +1,12 @@
 import 'package:app_cats/services/models/db_user.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/functions/commons/generateRandomHumanName.dart';
 import '../services/functions/mongo/db_connection.dart';
 import '../services/models/user.dart';
+import '../services/providers/user_provider.dart';
 import '../services/settings/const.dart';
 import '../widgets/global/input_password.dart';
-import 'onboarding.dart';
 
 class LoginSignUp extends StatefulWidget {
   const LoginSignUp({super.key});
@@ -24,9 +25,13 @@ class _LoginSignUpState extends State<LoginSignUp> {
   );
 
   void goToOnBoarding(String name, String role) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => OnboardingWidget(name: name, role: role),
-    ));
+    // Go Direct to Home
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.setUser(name, role);
+
+    // Navigator.of(context).push(MaterialPageRoute(
+    //   builder: (context) => OnboardingWidget(name: name, role: role),
+    // ));
   }
 
   void goToFuck() {

@@ -49,5 +49,9 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+		<string>App Cats uses your camera to take photos of your cat.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>App Cats uses your photo library to store photos of your cat.</string>
 	</dict>
 </plist>

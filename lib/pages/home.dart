@@ -36,25 +36,29 @@ class TabLayout extends StatelessWidget {
           if (userProvider.isUserLoggedIn) {
             return Text(tabProvider.getTitleTab);
           } else {
-            return const Text('Home');
+            return const Text('');
           }
         }),
         actions: [
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, _) {
-              return IconButton(
-                icon: themeProvider.theme == ThemeMode.dark
-                    ? const Icon(Icons.light_mode)
-                    : const Icon(Icons.dark_mode),
-                onPressed: () {
-                  themeProvider.changeTheme(isDarkTheme ? ThemeMode.light : ThemeMode.dark);
-                },
-              );
-            },
+          Consumer2<UserProvider, ThemeProvider>(
+            builder: (context, userProvider, themeProvider, _) {
+              if (userProvider.isUserLoggedIn) {
+                return IconButton(
+                  icon: themeProvider.theme == ThemeMode.dark
+                      ? const Icon(Icons.light_mode)
+                      : const Icon(Icons.dark_mode),
+                  onPressed: () {
+                    themeProvider.changeTheme(
+                        isDarkTheme ? ThemeMode.light : ThemeMode.dark);
+                  },
+                );
+              } else {
+                return const Text('');
+              }
+            }
           ),
-          Consumer3<TabProvider, UserProvider, ThemeProvider>(
-              builder: (context, tabProvider, userProvider, themeProvider,
-                  child)
+          Consumer<UserProvider>(
+              builder: (context,  userProvider, child)
               {
             if (userProvider.isUserLoggedIn) {
               return IconButton(
@@ -67,7 +71,6 @@ class TabLayout extends StatelessWidget {
               return const Text('');
             }
           }),
-
         ],
       ),
       body: Consumer3<TabProvider, UserProvider, ThemeProvider>(
