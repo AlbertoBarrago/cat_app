@@ -13,6 +13,7 @@ class TabSettings extends StatefulWidget {
   State<TabSettings> createState() => _TabSettingsState();
 }
 
+
 class _TabSettingsState extends State<TabSettings> {
 
 
@@ -21,14 +22,15 @@ class _TabSettingsState extends State<TabSettings> {
     final userProvider = Provider.of<UserProvider>(context);
     final tabProvider = Provider.of<TabProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-    bool isDarkTheme = themeProvider.theme == ThemeMode.dark;
+    bool isDarkTheme = themeProvider.theme == ThemeMode.dark ? true : false;
+    print(isDarkTheme);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SwitchListTile(
             title: const Text('Dark Theme'),
-            value: themeProvider.theme == ThemeMode.dark,
+            value: isDarkTheme ? true : false,
             onChanged: (value) {
               setState(() {
                 isDarkTheme = value; // Update the theme state
