@@ -110,9 +110,7 @@ class TabLayout extends StatelessWidget {
     );
   }
 
-  void _onCollaboratePressed() {
-    print('Collaborate button pressed');
-  }
+
 
   Widget _buildTabContent(TabItem currentTab, username) {
     switch (currentTab) {
@@ -120,7 +118,7 @@ class TabLayout extends StatelessWidget {
         return const TabCat();
       case TabItem.tabHome:
         return TabHome(
-            username: username, onCollaboratePressed: _onCollaboratePressed);
+            username: username);
       case TabItem.tabSettings:
         return const TabSettings();
     }

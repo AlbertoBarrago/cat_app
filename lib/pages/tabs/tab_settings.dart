@@ -23,7 +23,7 @@ class _TabSettingsState extends State<TabSettings> {
     final tabProvider = Provider.of<TabProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     bool isDarkTheme = themeProvider.theme == ThemeMode.dark ? true : false;
-    print(isDarkTheme);
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

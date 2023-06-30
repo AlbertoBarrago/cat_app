@@ -11,6 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   flutter:
     sdk: flutter
+  flutter_email_sender: ^6.0.0
   flutter_file_dialog: ^3.0.1
   gallery_saver: ^2.3.2
   http: ^0.13.6

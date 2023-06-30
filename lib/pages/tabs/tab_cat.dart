@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-
 class TabCat extends StatefulWidget {
   const TabCat({super.key});
 
@@ -25,7 +24,8 @@ class _CatGridWidgetState extends State<TabCat> {
   }
 
   Future<void> _fetchCatImages() async {
-    final response = await http.get(Uri.parse('https://api.thecatapi.com/v1/images/search?limit=20'));
+    final response = await http
+        .get(Uri.parse('https://api.thecatapi.com/v1/images/search?limit=20'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List<dynamic>;
       final catImages = data.map((item) => item['url'] as String).toList();
@@ -41,8 +41,22 @@ class _CatGridWidgetState extends State<TabCat> {
 
   String createRandomTitleFunnyTitle() {
     final random = Random();
-    final funnyTitles
-    = ['Funny Cat', 'Cute Cat', 'Crazy Cat', 'Angry Cat', 'Sleepy Cat', 'Hungry Cat', 'Silly Cat', 'Lazy Cat', 'Cuddly Cat', 'Happy Cat', 'Sneaky Cat', 'Sassy Cat', 'Grumpy Cat', 'Fluffy Cat'];
+    final funnyTitles = [
+      'Funny Cat',
+      'Cute Cat',
+      'Crazy Cat',
+      'Angry Cat',
+      'Sleepy Cat',
+      'Hungry Cat',
+      'Silly Cat',
+      'Lazy Cat',
+      'Cuddly Cat',
+      'Happy Cat',
+      'Sneaky Cat',
+      'Sassy Cat',
+      'Grumpy Cat',
+      'Fluffy Cat'
+    ];
     final randomIndex = random.nextInt(funnyTitles.length);
     final randomTitle = funnyTitles[randomIndex];
     return randomTitle;
@@ -67,10 +81,9 @@ class _CatGridWidgetState extends State<TabCat> {
                   ),
                   IconButton(
                       icon: const Icon(Icons.download),
-                       onPressed: () {
+                      onPressed: () {
                         downloadImage(imageUrl, 'cat');
-                       }
-                  ),
+                      }),
                   // IconButton(
                   //   icon: const Icon(Icons.photo),
                   //   onPressed: () {
@@ -142,7 +155,8 @@ class _CatGridWidgetState extends State<TabCat> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      _showImageModal(catImages[index], createRandomTitleFunnyTitle());
+                      _showImageModal(
+                          catImages[index], createRandomTitleFunnyTitle());
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -184,12 +198,10 @@ class _CatGridWidgetState extends State<TabCat> {
     Share.share(imageUrl, subject: 'Look at this cat!');
   }
 
-  void downloadImage(String imageUrl, String albumName)  {
+  void downloadImage(String imageUrl, String albumName) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-     GallerySaver.saveImage(imageUrl).then((value) =>
-     scaffoldMessenger.showSnackBar(
-         SnackBar(content: Text('Image saved to $albumName album.')))
-     );
+    GallerySaver.saveImage(imageUrl).then((value) =>
+        scaffoldMessenger.showSnackBar(
+            SnackBar(content: Text('Image saved to $albumName album.'))));
   }
-
 }

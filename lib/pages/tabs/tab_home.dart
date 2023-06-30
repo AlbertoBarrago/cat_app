@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:app_cats/widgets/features/email_modal.dart';
 
 class TabHome extends StatelessWidget {
-  const TabHome({super.key, required this.username, required this.onCollaboratePressed});
+  const TabHome({super.key, required this.username});
 
   final String username;
-  final VoidCallback onCollaboratePressed;
+
+  void onCollaboratePressed(BuildContext context) {
+    showModalBottomSheet(context: context, builder: (BuildContext context) {
+      return const EmailSender();
+    });
+  }
 
 
   @override
@@ -31,7 +37,7 @@ class TabHome extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           ElevatedButton(
-            onPressed: onCollaboratePressed,
+            onPressed: () => onCollaboratePressed(context), // Call the function from an event handler.
             child: const Text('Collaborate'),
           ),
         ],
