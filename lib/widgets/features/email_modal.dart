@@ -25,7 +25,7 @@ class _EmailSenderState extends State<EmailSender> {
   final _subjectController = TextEditingController(text: 'The subject');
 
   final _bodyController = TextEditingController(
-    text: 'Mail body.',
+    text: 'Request of collaboration',
   );
 
   Future<void> send() async {
@@ -42,6 +42,7 @@ class _EmailSenderState extends State<EmailSender> {
     try {
       await FlutterEmailSender.send(email);
       platformResponse = 'success';
+      _closeModal();
     } catch (error) {
       if (kDebugMode) {
         print(error);
@@ -70,94 +71,101 @@ class _EmailSenderState extends State<EmailSender> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _recipientController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Recipient',
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: MediaQuery.of(context).size.width,
+            // minHeight: MediaQuery.of(context).size.height,
+          ),
+          child: IntrinsicHeight(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _recipientController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Recipient',
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _subjectController,
-                decoration:  const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Subject',
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _subjectController,
+                    decoration:  const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Subject',
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _bodyController,
-                  maxLines: null,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: const InputDecoration(
-                      labelText: 'Body', border: OutlineInputBorder()),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _bodyController,
+                      maxLines: null,
+                      expands: false,
+                      // textAlignVertical: TextAlignVertical.top,
+                      decoration: const InputDecoration(
+                          labelText: 'Body', border: OutlineInputBorder()),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            CheckboxListTile(
-              contentPadding:
-              const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-              title: const Text('HTML'),
-              onChanged: (bool? value) {
-                if (value != null) {
-                  setState(() {
-                    isHTML = value;
-                  });
-                }
-              },
-              value: isHTML,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  for (var i = 0; i < attachments.length; i++)
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            attachments[i],
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                          ),
+                CheckboxListTile(
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                  title: const Text('HTML'),
+                  onChanged: (bool? value) {
+                    if (value != null) {
+                      setState(() {
+                        isHTML = value;
+                      });
+                    }
+                  },
+                  value: isHTML,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      for (var i = 0; i < attachments.length; i++)
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                attachments[i],
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle),
+                              onPressed: () => {_removeAttachment(i)},
+                            )
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle),
-                          onPressed: () => {_removeAttachment(i)},
-                        )
-                      ],
-                    ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.attach_file),
-                      onPressed: _openImagePicker,
-                    ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.attach_file),
+                          onPressed: _openImagePicker,
+                        ),
+                      ),
+                      TextButton(
+                        child: const Text('Attach file in app documents directory'),
+                        onPressed: () => _attachFileFromAppDocumentsDirectory(),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    child: const Text('Attach file in app documents directory'),
-                    onPressed: () => _attachFileFromAppDocumentsDirectoy(),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -165,7 +173,8 @@ class _EmailSenderState extends State<EmailSender> {
 
   void _openImagePicker() async {
     final picker = ImagePicker();
-    PickedFile? pick = await picker.getImage(source: ImageSource.gallery);
+    final pick = await picker.pickImage(source: ImageSource.gallery);
+
     if (pick != null) {
       setState(() {
         attachments.add(pick.path);
@@ -179,7 +188,11 @@ class _EmailSenderState extends State<EmailSender> {
     });
   }
 
-  Future<void> _attachFileFromAppDocumentsDirectoy() async {
+  void _closeModal() {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _attachFileFromAppDocumentsDirectory() async {
     try {
       final appDocumentDir = await getApplicationDocumentsDirectory();
       final filePath = '${appDocumentDir.path}/file.txt';
