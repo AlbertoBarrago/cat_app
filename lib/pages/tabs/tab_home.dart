@@ -7,9 +7,12 @@ class TabHome extends StatelessWidget {
   final String username;
 
   void onCollaboratePressed(BuildContext context) {
-    showModalBottomSheet(context: context, builder: (BuildContext context) {
-      return const EmailSender();
-    });
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const EmailSender(),
+      ),
+    );
   }
 
 

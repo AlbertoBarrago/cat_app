@@ -29,6 +29,18 @@ class _EmailSenderState extends State<EmailSender> {
   );
 
   Future<void> send() async {
+    //add validation
+    if (_recipientController.text.isEmpty ||
+        _subjectController.text.isEmpty ||
+        _bodyController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill all the fields'),
+        ),
+      );
+      return;
+    }
+
     final Email email = Email(
       body: _bodyController.text,
       subject: _subjectController.text,
@@ -59,11 +71,27 @@ class _EmailSenderState extends State<EmailSender> {
     );
   }
 
+  void notifierAttachmentSuccess(bool success) {
+    if(success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File attached'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File not attached'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Plugin example app'),
+        title: const Text('Send me a message'),
         actions: <Widget>[
           IconButton(
             onPressed: send,
@@ -72,8 +100,7 @@ class _EmailSenderState extends State<EmailSender> {
         ],
       ),
       body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-
+        physics: const AlwaysScrollableScrollPhysics(),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: MediaQuery.of(context).size.width,
@@ -97,7 +124,7 @@ class _EmailSenderState extends State<EmailSender> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     controller: _subjectController,
-                    decoration:  const InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Subject',
                     ),
@@ -108,27 +135,28 @@ class _EmailSenderState extends State<EmailSender> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       controller: _bodyController,
+                      keyboardType: TextInputType.multiline,
                       maxLines: null,
-                      expands: false,
-                      // textAlignVertical: TextAlignVertical.top,
+                      expands: true,
+                      textAlignVertical: TextAlignVertical.top,
                       decoration: const InputDecoration(
                           labelText: 'Body', border: OutlineInputBorder()),
                     ),
                   ),
                 ),
-                CheckboxListTile(
-                  contentPadding:
-                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-                  title: const Text('HTML'),
-                  onChanged: (bool? value) {
-                    if (value != null) {
-                      setState(() {
-                        isHTML = value;
-                      });
-                    }
-                  },
-                  value: isHTML,
-                ),
+                // CheckboxListTile(
+                //   contentPadding:
+                //   const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                //   title: const Text('HTML'),
+                //   onChanged: (bool? value) {
+                //     if (value != null) {
+                //       setState(() {
+                //         isHTML = value;
+                //       });
+                //     }
+                //   },
+                //   value: isHTML,
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -149,16 +177,10 @@ class _EmailSenderState extends State<EmailSender> {
                             )
                           ],
                         ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: const Icon(Icons.attach_file),
-                          onPressed: _openImagePicker,
-                        ),
-                      ),
-                      TextButton(
-                        child: const Text('Attach file in app documents directory'),
-                        onPressed: () => _attachFileFromAppDocumentsDirectory(),
+                      ElevatedButton.icon(
+                        onPressed: _openImagePicker,
+                        icon: const Icon(Icons.attach_file),
+                        label: const Text('Attach File'),
                       ),
                     ],
                   ),
@@ -176,9 +198,12 @@ class _EmailSenderState extends State<EmailSender> {
     final pick = await picker.pickImage(source: ImageSource.gallery);
 
     if (pick != null) {
+      notifierAttachmentSuccess(true);
       setState(() {
         attachments.add(pick.path);
       });
+    } else {
+      notifierAttachmentSuccess(false);
     }
   }
 
@@ -205,7 +230,7 @@ class _EmailSenderState extends State<EmailSender> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to create file in applicion directory'),
+          content: Text('Failed to create file in application directory'),
         ),
       );
     }
