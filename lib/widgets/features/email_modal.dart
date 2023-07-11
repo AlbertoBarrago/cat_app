@@ -29,7 +29,7 @@ class _EmailSenderState extends State<EmailSender> {
   );
 
   void notifierAttachmentSuccess(bool success) {
-    if(success) {
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('File attached'),
@@ -91,7 +91,7 @@ class _EmailSenderState extends State<EmailSender> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Send me a message'),
+        title: const Text('Send a message'),
         actions: <Widget>[
           IconButton(
             onPressed: send,
@@ -99,94 +99,130 @@ class _EmailSenderState extends State<EmailSender> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: MediaQuery.of(context).size.width,
-            // minHeight: MediaQuery.of(context).size.height,
-          ),
-          child: IntrinsicHeight(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
+      body: ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: MediaQuery.of(context).size.width,
+          // minHeight: MediaQuery.of(context).size.height,
+        ),
+        child: IntrinsicHeight(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _recipientController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Recipient',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _subjectController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Subject',
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    controller: _recipientController,
+                    controller: _bodyController,
+                    keyboardType: TextInputType.multiline,
+                    expands: false,
+                    maxLines: 10,
+                    minLines: 5,
+                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      labelText: 'Body',
                       border: OutlineInputBorder(),
-                      labelText: 'Recipient',
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: _subjectController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Subject',
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _bodyController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      expands: true,
-                      textAlignVertical: TextAlignVertical.top,
-                      decoration: const InputDecoration(
-                          labelText: 'Body', border: OutlineInputBorder()),
-                    ),
-                  ),
-                ),
-                // CheckboxListTile(
-                //   contentPadding:
-                //   const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-                //   title: const Text('HTML'),
-                //   onChanged: (bool? value) {
-                //     if (value != null) {
-                //       setState(() {
-                //         isHTML = value;
-                //       });
-                //     }
-                //   },
-                //   value: isHTML,
-                // ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      for (var i = 0; i < attachments.length; i++)
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                attachments[i],
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    for (var i = 0; i < attachments.length; i++)
+                      Row(
+                        children: <Widget>[
+                          Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(
+                                    value: 1,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.grey),
+                                  ),
+                                ),
                               ),
+                              Image(
+                                image: FileImage(File(attachments[i])),
+                                height: 50,
+                              ),
+                              Text(
+                                '${i + 1}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 8.0,
+                          ),
+                          Expanded(
+                            child: Text(
+                              attachments[i].split('/').last,
+                              softWrap: true,
+                              overflow: TextOverflow.fade,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle),
-                              onPressed: () => {_removeAttachment(i)},
-                            )
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle),
+                            onPressed: () => {_removeAttachment(i)},
+                          )
+                        ],
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 30.0), // Add bottom padding here
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                ElevatedButton.icon(
+                                  onPressed: _openImagePicker,
+                                  icon: const Icon(Icons.attach_file),
+                                  label: const Text('File From Documents'),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                      ElevatedButton.icon(
-                        onPressed: _openImagePicker,
-                        icon: const Icon(Icons.attach_file),
-                        label: const Text('Attach File'),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
