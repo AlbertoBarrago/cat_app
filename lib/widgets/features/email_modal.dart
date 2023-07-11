@@ -28,6 +28,22 @@ class _EmailSenderState extends State<EmailSender> {
     text: 'Request of collaboration',
   );
 
+  void notifierAttachmentSuccess(bool success) {
+    if(success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File attached'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File not attached'),
+        ),
+      );
+    }
+  }
+
   Future<void> send() async {
     //add validation
     if (_recipientController.text.isEmpty ||
@@ -69,22 +85,6 @@ class _EmailSenderState extends State<EmailSender> {
         content: Text(platformResponse),
       ),
     );
-  }
-
-  void notifierAttachmentSuccess(bool success) {
-    if(success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('File attached'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('File not attached'),
-        ),
-      );
-    }
   }
 
   @override
